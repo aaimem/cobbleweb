@@ -1,53 +1,29 @@
-import { AppDataSource } from "../data-source"
-import { NextFunction, Request, Response } from "express"
-import { User } from "../entity/User"
+import { UserService } from "../services/UserService";
+const userService = new UserService();
 
 export class UserController {
-
-    private userRepository = AppDataSource.getRepository(User)
-
-    async all(request: Request, response: Response, next: NextFunction) {
-        return this.userRepository.find()
+  async register(req, res, next) {
+    try {
+      //handle register logic
+      await userService.register(req.body);
+    } catch (error) {
+      //handle error
     }
-
-    async one(request: Request, response: Response, next: NextFunction) {
-        const id = parseInt(request.params.id)
-
-
-        const user = await this.userRepository.findOne({
-            where: { id }
-        })
-
-        if (!user) {
-            return "unregistered user"
-        }
-        return user
+  }
+  async login(req, res, next) {
+    try {
+      //handle login logic
+      await userService.login(req.body);
+    } catch (error) {
+      //handle error
     }
-
-    async save(request: Request, response: Response, next: NextFunction) {
-        const { firstName, lastName, age } = request.body;
-
-        const user = Object.assign(new User(), {
-            firstName,
-            lastName,
-            age
-        })
-
-        return this.userRepository.save(user)
+  }
+  async user(req, res, next) {
+    try {
+      //handle user logic
+      await userService.user(req);
+    } catch (error) {
+      //handle error
     }
-
-    async remove(request: Request, response: Response, next: NextFunction) {
-        const id = parseInt(request.params.id)
-
-        let userToRemove = await this.userRepository.findOneBy({ id })
-
-        if (!userToRemove) {
-            return "this user not exist"
-        }
-
-        await this.userRepository.remove(userToRemove)
-
-        return "user has been removed"
-    }
-
+  }
 }

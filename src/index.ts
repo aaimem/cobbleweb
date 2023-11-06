@@ -2,16 +2,20 @@ import * as express from "express";
 import * as bodyParser from "body-parser";
 import { Request, Response } from "express";
 import { AppDataSource } from "./data-source";
-import { Routes } from "./routes";
-import { User } from "./entity/User";
+import { config } from "dotenv";
 
-require("dotenv").config();
+config();
 const port = process.env.SERVER_PORT || 3000;
+const userRouter = require("./routes/user");
 
 AppDataSource.initialize()
   .then(async () => {
     const app = express();
-    app.use(bodyParser.json());
+    app.use(bodyParser.json({ limit: "50mb" }));
+
+    //api routes
+    app.use("/api", userRouter);
+
     app.listen(port);
     console.log(
       `Express server has started on port ${port}. Open http://localhost:${port}/users to see results`
