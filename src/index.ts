@@ -5,7 +5,7 @@ import { AppDataSource } from "./data-source";
 import { config } from "dotenv";
 
 config();
-const port = process.env.SERVER_PORT || 3000;
+const port = parseInt(process.env.PORT, 10) || 3000;
 const userRouter = require("./routes/user");
 
 AppDataSource.initialize()
