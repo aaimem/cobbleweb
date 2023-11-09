@@ -6,11 +6,14 @@ const userService = new UserService();
 export class UserController {
   async register(req: Request, res: Response, next: NextFunction) {
     try {
-      const user = await userService.register(req.body);
-      return res.status(HttpCode.CREATED).send({
+      const { user, token } = await userService.register(req.body);
+      const { password, ...rest } = user;
+      const userDetails = {
+        user: rest,
+        token,
         message: "User successfully created!",
-        user,
-      });
+      };
+      return res.status(HttpCode.CREATED).send(userDetails);
     } catch (error) {
       next(error);
     }
@@ -18,14 +21,23 @@ export class UserController {
 
   async login(req: Request, res: Response, next: NextFunction) {
     try {
-      //handle login logic
+      const { user, token } = await userService.login(req.body);
+      const { password, ...rest } = user;
+      const userDetails = {
+        user: rest,
+        token,
+        message: "Successfully login!",
+      };
+      return res.status(HttpCode.OK).send(userDetails);
     } catch (error) {
       next(error);
     }
   }
   async me(req: Request, res: Response, next: NextFunction) {
     try {
-      //handle login logic
+      // const token = req.headers.authorization;
+      // const user = await userService.me(token);
+      // return res.status(HttpCode.OK).send(user);
     } catch (error) {
       next(error);
     }
