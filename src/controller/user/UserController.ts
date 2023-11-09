@@ -2,6 +2,7 @@ import { Request, Response, NextFunction } from "express";
 import { UserService } from "../../services/user/UserService";
 import { HttpCode } from "../../errors/AppError";
 const userService = new UserService();
+import CustomRequest from "../../../index";
 
 export class UserController {
   async register(req: Request, res: Response, next: NextFunction) {
@@ -33,11 +34,10 @@ export class UserController {
       next(error);
     }
   }
-  async me(req: Request, res: Response, next: NextFunction) {
+  async me(req: CustomRequest, res: Response, next: NextFunction) {
     try {
-      // const token = req.headers.authorization;
-      // const user = await userService.me(token);
-      // return res.status(HttpCode.OK).send(user);
+      const user = await userService.me(req.jwtPayload.id);
+      return res.status(HttpCode.OK).send(user);
     } catch (error) {
       next(error);
     }

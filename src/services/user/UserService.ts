@@ -85,10 +85,10 @@ export class UserService {
     }
   }
 
-  async me(token: string) {
+  async me(id: number) {
     try {
-      //handle user logic
-      // const user = await this.userRepository.findOneBy({ id });
+      const user = await this.userRepository.findOneBy({ id });
+      return user;
     } catch (error) {
       throw error;
     }
