@@ -1,11 +1,13 @@
 import { AppError, HttpCode } from "../../errors/AppError";
 import * as bcrypt from "bcrypt";
+import { Photo } from "../../entity/Photo";
 
-interface Errors {
+interface RegisterValidation {
   firstName?: string;
   lastName?: string;
   email?: string;
   password?: string;
+  photos?: Photo[];
 }
 
 const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
@@ -17,15 +19,19 @@ export class ValidationService {
     lastName = "",
     email = "",
     password = "",
-  }: Errors) {
+    photos = [],
+  }: RegisterValidation) {
     let error = "";
     const minLength = 2;
     const maxLength = 25;
     const firstNameRegex = new RegExp(`^[a-zA-Z]{${minLength},${maxLength}}$`);
     const lastNameRegex = new RegExp(`^[a-zA-Z]{${minLength},${maxLength}}$`);
+    if (photos.length < 4) {
+      error = "At least 4 photos are required during registration.";
+    }
     if (!passwordRegex.test(password))
       error =
-        "Password should be minimum 6 characters and maximum 50 characters with 1 number.";
+        "Password should be minimum 6 characters to maximum 50 characters long and 1 number.";
     if (!emailRegex.test(email)) error = "Invalid email format.";
     if (!lastNameRegex.test(lastName))
       error =
@@ -43,7 +49,7 @@ export class ValidationService {
   validateLoginBody({ email = "", password = "" }) {
     let error = "";
     if (!passwordRegex.test(password))
-      error = "Password should be minimum 6 characters with 1 number.";
+      error = "Password should be minimum 6 characters and 1 number.";
     if (!emailRegex.test(email)) error = "Invalid email format.";
     if (error)
       throw new AppError({

@@ -3,9 +3,10 @@ import {
   PrimaryGeneratedColumn,
   Column,
   Unique,
-  OneToMany,
+  CreateDateColumn,
+  UpdateDateColumn,
+  BeforeInsert,
 } from "typeorm";
-// import { Photo } from './Photo';
 
 @Entity()
 @Unique(["email"])
@@ -19,28 +20,29 @@ export class User {
   @Column()
   lastName: string;
 
+  @Column({ nullable: true })
+  fullName: string;
+
+  @BeforeInsert()
+  updateFullName() {
+    this.fullName = `${this.firstName} ${this.lastName}`;
+  }
+
   @Column()
   email: string;
 
   @Column()
   password: string;
 
-  @Column()
+  @Column({ default: "client" })
   role: string;
 
   @Column({ default: true })
   active: boolean;
 
-  @Column({ type: "timestamp", default: () => "CURRENT_TIMESTAMP" })
+  @CreateDateColumn()
   createdAt: Date;
 
-  @Column({
-    type: "timestamp",
-    default: () => "CURRENT_TIMESTAMP",
-    onUpdate: "CURRENT_TIMESTAMP",
-  })
+  @UpdateDateColumn()
   updatedAt: Date;
-
-  //   @OneToMany(type => Photo, photo => photo.user)
-  //   photos: Photo[];
 }

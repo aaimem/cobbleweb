@@ -7,14 +7,12 @@ import CustomRequest from "../../../index";
 export class UserController {
   async register(req: Request, res: Response, next: NextFunction) {
     try {
-      const { user, token } = await userService.register(req.body);
-      const { password, ...rest } = user;
-      const userDetails = {
-        user: rest,
-        token,
-        message: "User successfully created!",
-      };
-      return res.status(HttpCode.CREATED).send(userDetails);
+      const client = await userService.register(req.body);
+      if (client) {
+        return res
+          .status(HttpCode.CREATED)
+          .send({ message: "User successfully created!" });
+      }
     } catch (error) {
       next(error);
     }
@@ -22,22 +20,18 @@ export class UserController {
 
   async login(req: Request, res: Response, next: NextFunction) {
     try {
-      const { user, token } = await userService.login(req.body);
-      const { password, ...rest } = user;
-      const userDetails = {
-        user: rest,
-        token,
-        message: "Successfully login!",
-      };
-      return res.status(HttpCode.OK).send(userDetails);
+      const token = await userService.login(req.body);
+      return res
+        .status(HttpCode.OK)
+        .send({ message: "Successfull login!", token });
     } catch (error) {
       next(error);
     }
   }
   async me(req: CustomRequest, res: Response, next: NextFunction) {
     try {
-      const user = await userService.me(req.jwtPayload.id);
-      return res.status(HttpCode.OK).send(user);
+      const clientDetails = await userService.me(req.jwtPayload.id);
+      return res.status(HttpCode.OK).send({ clientDetails });
     } catch (error) {
       next(error);
     }
