@@ -3,7 +3,8 @@ import { DataSource } from "typeorm";
 import { User } from "./entity/User";
 import { Client } from "./entity/Client";
 import { Photo } from "./entity/Photo";
-require("dotenv").config();
+import { config } from "dotenv";
+config();
 
 export const AppDataSource = new DataSource({
   type: "postgres",

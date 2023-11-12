@@ -1,12 +1,12 @@
-import * as express from "express";
-import * as bodyParser from "body-parser";
+import express from "express";
+import bodyParser from "body-parser";
 import { AppDataSource } from "./data-source";
 import { config } from "dotenv";
-import errorHandler from "./middlewares/errorHandler";
-
-config();
+import { errorHandler } from "./middlewares/errorHandler";
 const port = parseInt(process.env.PORT, 10) || 3000;
 const userRouter = require("./routes/user/user");
+const photosRouter = require("./routes/photos/photos");
+config();
 
 AppDataSource.initialize()
   .then(async () => {
@@ -14,7 +14,7 @@ AppDataSource.initialize()
     app.use(bodyParser.json({ limit: "50mb" }));
 
     app.use("/api", userRouter);
-
+    app.use("/api/photos", photosRouter);
     app.use(errorHandler);
 
     app.listen(port);

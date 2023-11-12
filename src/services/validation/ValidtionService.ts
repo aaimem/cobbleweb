@@ -1,5 +1,5 @@
 import { AppError, HttpCode } from "../../errors/AppError";
-import * as bcrypt from "bcrypt";
+import bcrypt from "bcrypt";
 import { Photo } from "../../entity/Photo";
 
 interface RegisterValidation {

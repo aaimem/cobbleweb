@@ -1,4 +1,4 @@
-import * as jwt from "jsonwebtoken";
+import jwt from "jsonwebtoken";
 
 export class JWTService {
   async generateAuthToken({ id, email }: { id: number; email: string }) {

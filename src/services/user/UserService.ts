@@ -5,7 +5,7 @@ import { Photo } from "../../entity/Photo";
 import { AppError, HttpCode } from "../../errors/AppError";
 import { ValidationService } from "../validation/ValidtionService";
 import { JWTService } from "../jwt/JWTService";
-import * as bcrypt from "bcrypt";
+import bcrypt from "bcrypt";
 
 interface RegisterUserProps {
   firstName: string;

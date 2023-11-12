@@ -1,6 +1,6 @@
 import { Response, NextFunction } from "express";
 import { AppError, HttpCode } from "../errors/AppError";
-import * as jwt from "jsonwebtoken";
+import jwt from "jsonwebtoken";
 import CustomRequest from "../../index";
 
 export const checkJWT = (
@@ -17,9 +17,9 @@ export const checkJWT = (
 
   const token = req.headers.authorization?.split(" ")[1] as string;
   try {
-    const jwtPayload = jwt.verify(token, process.env.JWT_SECRET) as any;
+    const jwtPayload = jwt.verify(token, process.env.JWT_SECRET) as string;
     req.jwtPayload = jwtPayload;
-    return next();
+    next();
   } catch (err) {
     throw new AppError({
       httpCode: HttpCode.UNAUTHORIZED,
