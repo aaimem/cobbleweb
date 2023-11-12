@@ -18,6 +18,11 @@ interface RegisterUserProps {
   avatar: string;
 }
 
+interface LoginUserProps {
+  email: string;
+  password: string;
+}
+
 export class UserService {
   private validationService = new ValidationService();
   private jwtService = new JWTService();
@@ -25,79 +30,124 @@ export class UserService {
   private clientRepository = AppDataSource.getRepository(Client);
   private photoRepository = AppDataSource.getRepository(Photo);
 
-  async register({
+  validateRegisterBody({
+    firstName,
+    lastName,
+    email,
+    password,
+    photos,
+  }: RegisterUserProps) {
+    this.validationService.validateRegisterBody({
+      firstName,
+      lastName,
+      email,
+      password,
+      photos,
+    });
+  }
+
+  async createUser({
     firstName,
     lastName,
     email,
     password,
     role,
     active,
-    photos,
-    avatar,
-  }: RegisterUserProps) {
-    try {
-      this.validationService.validateRegisterBody({
-        firstName,
-        lastName,
-        email,
-        password,
-        photos,
+  }: RegisterUserProps): Promise<User> {
+    const newUser = Object.assign(new User(), {
+      firstName,
+      lastName,
+      email,
+      password: bcrypt.hashSync(password, 10),
+      role,
+      active,
+    });
+    await this.userRepository.save(newUser);
+    return newUser;
+  }
+
+  async savePhotos(photos: Photo[], userId: number): Promise<Photo[]> {
+    const clientPhotos = photos.map((photo: Photo) => {
+      const photoObject = Object.assign(new Photo(), {
+        name: photo.name,
+        url: photo.url,
+        user: userId,
       });
-      const foundUser = await this.userRepository.findOneBy({ email });
+      return photoObject;
+    });
+    await this.photoRepository.save(clientPhotos);
+    return clientPhotos;
+  }
+
+  async createClient(
+    avatar: string,
+    userId: number,
+    clientPhotos: Photo[]
+  ): Promise<Client> {
+    const newClient = Object.assign(new Client(), {
+      avatar,
+      user: userId,
+      photos: clientPhotos,
+    });
+    const client = await this.clientRepository.save(newClient);
+    return client;
+  }
+
+  async register(reqBody: RegisterUserProps): Promise<Client> {
+    try {
+      this.validateRegisterBody(reqBody);
+
+      const foundUser = await this.userRepository.findOneBy({
+        email: reqBody.email,
+      });
       if (foundUser) {
         throw new AppError({
           httpCode: HttpCode.BAD_REQUEST,
-          description: "User with this email already exist!",
+          description: "User with this email already exists!",
         });
       }
-      const newUser = Object.assign(new User(), {
-        firstName,
-        lastName,
-        email,
-        password: bcrypt.hashSync(password, 10),
-        role,
-        active,
-      });
-      await this.userRepository.save(newUser);
-      const clientPhotos = photos.map((photo: Photo) => {
-        const photoObject = Object.assign(new Photo(), {
-          name: photo.name,
-          url: photo.url,
-          user: newUser.id,
-        });
-        return photoObject;
-      });
-      await this.photoRepository.save(clientPhotos);
-      const newClient = Object.assign(new Client(), {
-        avatar,
-        user: newUser.id,
-        photos: clientPhotos,
-      });
-      const client = await this.clientRepository.save(newClient);
+
+      const newUser = await this.createUser(reqBody);
+      const clientPhotos = await this.savePhotos(reqBody.photos, newUser.id);
+      const client = await this.createClient(
+        reqBody.avatar,
+        newUser.id,
+        clientPhotos
+      );
+
       return client;
     } catch (error) {
       throw error;
     }
   }
 
-  async login({ email, password }) {
+  validateLoginBody({ email, password }) {
+    this.validationService.validateLoginBody({
+      email,
+      password,
+    });
+  }
+
+  async login({ email, password }: LoginUserProps) {
     try {
-      this.validationService.validateLoginBody({
+      this.validateLoginBody({ email, password });
+
+      const user = await this.userRepository.findOneBy({
         email,
-        password,
       });
-      const user = await this.userRepository.findOneBy({ email });
       if (!user) {
         throw new AppError({
           httpCode: HttpCode.NOT_FOUND,
           description: "User doesn't exist!",
         });
       }
-      this.validationService.comparePassword(password, user.password);
+
+      await this.validationService.comparePassword(password, user.password);
       const token = await this.jwtService.generateAuthToken({
         id: user.id,
         email: user.email,
       });
+
       return token;
     } catch (error) {
       throw error;
