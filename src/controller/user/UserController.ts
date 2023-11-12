@@ -1,6 +1,6 @@
 import { Request, Response, NextFunction } from "express";
 import { UserService } from "../../services/user/UserService";
-import { HttpCode } from "../../errors/AppError";
+import { HttpCode } from "../../models/app-error";
 import CustomRequest from "../../../index";
 
 const userService = new UserService();

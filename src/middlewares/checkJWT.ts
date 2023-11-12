@@ -1,5 +1,6 @@
 import { Response, NextFunction } from "express";
-import { AppError, HttpCode } from "../errors/AppError";
+import { AppError } from "../errors/AppError";
+import { HttpCode } from "../models/app-error";
 import jwt from "jsonwebtoken";
 import CustomRequest from "../../index";
 

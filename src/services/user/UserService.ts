@@ -2,26 +2,12 @@ import { AppDataSource } from "../../data-source";
 import { User } from "../../entity/User";
 import { Client } from "../../entity/Client";
 import { Photo } from "../../entity/Photo";
-import { AppError, HttpCode } from "../../errors/AppError";
+import { AppError } from "../../errors/AppError";
+import { HttpCode } from "../../models/app-error";
 import { ValidationService } from "../validation/ValidtionService";
 import { JWTService } from "../jwt/JWTService";
+import { RegisterUser, LoginUser } from "../../models/user";
 import bcrypt from "bcrypt";
-
-interface RegisterUserProps {
-  firstName: string;
-  lastName: string;
-  email: string;
-  password: string;
-  role: string;
-  active: boolean;
-  photos: Photo[];
-  avatar: string;
-}
-
-interface LoginUserProps {
-  email: string;
-  password: string;
-}
 
 export class UserService {
   private validationService = new ValidationService();
@@ -36,7 +22,7 @@ export class UserService {
     email,
     password,
     photos,
-  }: RegisterUserProps) {
+  }: RegisterUser) {
     this.validationService.validateRegisterBody({
       firstName,
       lastName,
@@ -53,7 +39,7 @@ export class UserService {
     password,
     role,
     active,
-  }: RegisterUserProps): Promise<User> {
+  }: RegisterUser): Promise<User> {
     const newUser = Object.assign(new User(), {
       firstName,
       lastName,
@@ -93,7 +79,7 @@ export class UserService {
     return client;
   }
 
-  async register(reqBody: RegisterUserProps): Promise<Client> {
+  async register(reqBody: RegisterUser): Promise<Client> {
     try {
       this.validateRegisterBody(reqBody);
 
@@ -128,7 +114,7 @@ export class UserService {
     });
   }
 
-  async login({ email, password }: LoginUserProps) {
+  async login({ email, password }: LoginUser) {
     try {
       this.validateLoginBody({ email, password });
 

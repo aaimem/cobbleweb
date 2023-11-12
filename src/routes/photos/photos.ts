@@ -1,6 +1,6 @@
 import { Router, Request, Response } from "express";
 import { fileUploadHandler } from "../../middlewares/fileUploadHandler";
-import { HttpCode } from "../../errors/AppError";
+import { HttpCode } from "../../models/app-error";
 import CustomRequest from "../../../index";
 import fs from "fs";
 import path from "path";

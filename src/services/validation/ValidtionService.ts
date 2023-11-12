@@ -1,17 +1,19 @@
-import { AppError, HttpCode } from "../../errors/AppError";
+import { AppError } from "../../errors/AppError";
+import { HttpCode } from "../../models/app-error";
 import bcrypt from "bcrypt";
-import { Photo } from "../../entity/Photo";
+import { RegisterUser, LoginUser } from "../../models/user";
 
-interface RegisterValidation {
-  firstName?: string;
-  lastName?: string;
-  email?: string;
-  password?: string;
-  photos?: Photo[];
-}
+const MIN_NAME_LENGTH = 2;
+const MAX_NAME_LENGTH = 25;
 
 const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
 const passwordRegex = /^(?=.*[0-9]).{6,50}$/;
+const firstNameRegex = new RegExp(
+  `^[a-zA-Z]{${MIN_NAME_LENGTH},${MAX_NAME_LENGTH}}$`
+);
+const lastNameRegex = new RegExp(
+  `^[a-zA-Z]{${MIN_NAME_LENGTH},${MAX_NAME_LENGTH}}$`
+);
 
 export class ValidationService {
   validateRegisterBody({
@@ -20,12 +22,8 @@ export class ValidationService {
     email = "",
     password = "",
     photos = [],
-  }: RegisterValidation) {
+  }: RegisterUser) {
     let error = "";
-    const minLength = 2;
-    const maxLength = 25;
-    const firstNameRegex = new RegExp(`^[a-zA-Z]{${minLength},${maxLength}}$`);
-    const lastNameRegex = new RegExp(`^[a-zA-Z]{${minLength},${maxLength}}$`);
     if (photos.length < 4) {
       error = "At least 4 photos are required during registration.";
     }
@@ -46,14 +44,14 @@ export class ValidationService {
       });
   }
 
-  validateLoginBody({ email = "", password = "" }) {
+  validateLoginBody({ email = "", password = "" }: LoginUser) {
     let error = "";
     if (!passwordRegex.test(password))
       error = "Password should be minimum 6 characters and 1 number.";
     if (!emailRegex.test(email)) error = "Invalid email format.";
     if (error)
       throw new AppError({
-        httpCode: HttpCode.BAD_REQUEST,
+        httpCode: HttpCode.UNAUTHORIZED,
         description: error,
       });
   }
