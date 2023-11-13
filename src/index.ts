@@ -11,7 +11,7 @@ config();
 AppDataSource.initialize()
   .then(async () => {
     const app = express();
-    app.use(bodyParser.json({ limit: "50mb" }));
+    app.use(bodyParser.json({ limit: "100mb" }));
 
     app.use("/api", userRouter);
     app.use("/api/photos", photosRouter);

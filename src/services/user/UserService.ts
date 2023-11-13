@@ -40,20 +40,23 @@ export class UserService {
     role,
     active,
   }: RegisterUser): Promise<User> {
-    const newUser = Object.assign(new User(), {
-      firstName,
-      lastName,
-      email,
-      password: bcrypt.hashSync(password, 10),
-      role,
-      active,
+    const saltRounds = 10;
+    const salt = await bcrypt.genSalt(saltRounds);
+    const hashedPassword = await bcrypt.hash(password, salt);
+    const user = Object.assign(new User(), {
+      firstName: firstName,
+      lastName: lastName,
+      email: email,
+      password: hashedPassword,
+      role: role,
+      active: active,
     });
-    await this.userRepository.save(newUser);
-    return newUser;
+    await this.userRepository.save(user);
+    return user;
   }
 
   async savePhotos(photos: Photo[], userId: number): Promise<Photo[]> {
-    const clientPhotos = photos.map((photo: Photo) => {
+    const photo = photos.map((photo: Photo) => {
       const photoObject = Object.assign(new Photo(), {
         name: photo.name,
         url: photo.url,
@@ -61,21 +64,21 @@ export class UserService {
       });
       return photoObject;
     });
-    await this.photoRepository.save(clientPhotos);
-    return clientPhotos;
+    await this.photoRepository.save(photo);
+    return photo;
   }
 
   async createClient(
     avatar: string,
     userId: number,
-    clientPhotos: Photo[]
+    photos: Photo[]
   ): Promise<Client> {
-    const newClient = Object.assign(new Client(), {
-      avatar,
+    const client = Object.assign(new Client(), {
+      avatar: avatar,
       user: userId,
-      photos: clientPhotos,
+      photos: photos,
     });
-    const client = await this.clientRepository.save(newClient);
+    await this.clientRepository.save(client);
     return client;
   }
 
@@ -93,13 +96,9 @@ export class UserService {
         });
       }
 
-      const newUser = await this.createUser(reqBody);
-      const clientPhotos = await this.savePhotos(reqBody.photos, newUser.id);
-      const client = await this.createClient(
-        reqBody.avatar,
-        newUser.id,
-        clientPhotos
-      );
+      const user = await this.createUser(reqBody);
+      const photos = await this.savePhotos(reqBody.photos, user.id);
+      const client = await this.createClient(reqBody.avatar, user.id, photos);
 
       return client;
     } catch (error) {
@@ -107,16 +106,12 @@ export class UserService {
     }
   }
 
-  validateLoginBody({ email, password }) {
-    this.validationService.validateLoginBody({
-      email,
-      password,
-    });
-  }
-
   async login({ email, password }: LoginUser) {
     try {
-      this.validateLoginBody({ email, password });
+      this.validationService.validateLoginBody({
+        email,
+        password,
+      });
 
       const user = await this.userRepository.findOneBy({
         email,
