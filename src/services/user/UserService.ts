@@ -1,7 +1,7 @@
 import { AppDataSource } from "../../data-source";
-import { User } from "../../entity/User";
-import { Client } from "../../entity/Client";
-import { Photo } from "../../entity/Photo";
+import { User } from "../../entities/User";
+import { Client } from "../../entities/Client";
+import { Photo } from "../../entities/Photo";
 import { AppError } from "../../errors/AppError";
 import { HttpCode } from "../../models/app-error";
 import { ValidationService } from "../validation/ValidtionService";

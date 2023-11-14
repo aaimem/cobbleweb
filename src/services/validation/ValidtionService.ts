@@ -26,6 +26,14 @@ export class ValidationService {
     let error = "";
     if (photos.length < 4) {
       error = "At least 4 photos are required during registration.";
+    } else {
+      for (let i = 0; i < photos.length; i++) {
+        const photo = photos[i];
+        if (!photo.name.trim() || !photo.url.trim()) {
+          error = "Both name and URL are required for each photo.";
+          break;
+        }
+      }
     }
     if (!passwordRegex.test(password))
       error =

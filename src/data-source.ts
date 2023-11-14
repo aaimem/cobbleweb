@@ -1,8 +1,8 @@
 import "reflect-metadata";
 import { DataSource } from "typeorm";
-import { User } from "./entity/User";
-import { Client } from "./entity/Client";
-import { Photo } from "./entity/Photo";
+import { User } from "./entities/User";
+import { Client } from "./entities/Client";
+import { Photo } from "./entities/Photo";
 import { config } from "dotenv";
 config();
 

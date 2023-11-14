@@ -1,4 +1,4 @@
-import { Photo } from "../entity/Photo";
+import { Photo } from "../entities/Photo";
 
 export interface RegisterUser {
   firstName: string;

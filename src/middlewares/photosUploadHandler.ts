@@ -1,7 +1,7 @@
 import { Response, NextFunction } from "express";
 import CustomRequest from "../../index";
 
-export const fileUploadHandler = (
+export const photosUploadHandler = (
   req: CustomRequest,
   res: Response,
   next: NextFunction

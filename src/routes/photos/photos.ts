@@ -1,5 +1,5 @@
 import { Router, Request, Response } from "express";
-import { fileUploadHandler } from "../../middlewares/fileUploadHandler";
+import { photosUploadHandler } from "../../middlewares/photosUploadHandler";
 import { HttpCode } from "../../models/app-error";
 import CustomRequest from "../../../index";
 import fs from "fs";
@@ -35,7 +35,7 @@ router.get("/", async (req: Request, res: Response) => {
 // @access Public
 router.post(
   "/upload",
-  fileUploadHandler,
+  photosUploadHandler,
   (req: CustomRequest, res: Response) => {
     const file = req.file;
     const fileNameRegex = /filename="(.+?)"/;
