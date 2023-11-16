@@ -30,6 +30,30 @@ export class UserService {
       password,
       photos,
     });
+    const allowedProperties = [
+      "firstName",
+      "lastName",
+      "email",
+      "password",
+      "photos",
+      "avatar",
+      "active",
+      "role",
+    ];
+    const receivedProperties = Object.keys(arguments[0]);
+
+    const invalidProperties = receivedProperties.filter(
+      (prop) => !allowedProperties.includes(prop)
+    );
+
+    if (invalidProperties.length > 0) {
+      throw new AppError({
+        httpCode: HttpCode.BAD_REQUEST,
+        description: `Invalid properties in the request: ${invalidProperties.join(
+          ", "
+        )}`,
+      });
+    }
   }
 
   async createUser({
@@ -106,13 +130,32 @@ export class UserService {
     }
   }
 
-  async login({ email, password }: LoginUser) {
-    try {
-      this.validationService.validateLoginBody({
-        email,
-        password,
-      });
+  validateLoginBody({ email, password }: LoginUser) {
+    const allowedProperties = ["email", "password"];
+    const receivedProperties = Object.keys(arguments[0]);
 
+    const invalidProperties = receivedProperties.filter(
+      (prop) => !allowedProperties.includes(prop)
+    );
+
+    if (invalidProperties.length > 0) {
+      throw new AppError({
+        httpCode: HttpCode.BAD_REQUEST,
+        description: `Invalid properties in the request: ${invalidProperties.join(
+          ", "
+        )}`,
+      });
+    }
+
+    this.validationService.validateLoginBody({
+      email,
+      password,
+    });
+  }
+
+  async login({ email, password }: LoginUser) {
+    this.validateLoginBody({ email, password });
+    try {
       const user = await this.userRepository.findOneBy({
         email,
       });

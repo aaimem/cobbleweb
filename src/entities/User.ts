@@ -34,7 +34,7 @@ export class User {
   @Column()
   password: string;
 
-  @Column({ default: "client" })
+  @Column()
   role: string;
 
   @Column({ default: true })
