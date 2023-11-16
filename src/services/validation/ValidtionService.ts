@@ -23,44 +23,72 @@ export class ValidationService {
     password = "",
     photos = [],
   }: RegisterUser) {
-    let error = "";
+    const errors = [];
+
+    if (!firstNameRegex.test(firstName))
+      errors.push({
+        field: "firstName",
+        message:
+          "First name should be minimum 2 characters and maximum 25 characters.",
+      });
+
+    if (!lastNameRegex.test(lastName))
+      errors.push({
+        field: "lastName",
+        message:
+          "Last name should be minimum 2 characters and maximum 25 characters.",
+      });
+
+    if (!emailRegex.test(email))
+      errors.push({ field: "email", message: "Invalid email." });
+
+    if (!passwordRegex.test(password))
+      errors.push({
+        field: "password",
+        message:
+          "Password should be minimum 6 characters to maximum 50 characters long and 1 number.",
+      });
+
     if (photos.length < 4) {
-      error = "At least 4 photos are required during registration.";
+      errors.push({
+        field: "photos",
+        message: "At least 4 photos are required during registration.",
+      });
     } else {
       for (let i = 0; i < photos.length; i++) {
         const photo = photos[i];
         if (!photo.name.trim() || !photo.url.trim()) {
-          error = "Both name and URL are required for each photo.";
-          break;
+          errors.push({
+            field: `name is required`,
+            message: "url is required.",
+          });
         }
       }
     }
-    if (!passwordRegex.test(password))
-      error =
-        "Password should be minimum 6 characters to maximum 50 characters long and 1 number.";
-    if (!emailRegex.test(email)) error = "Invalid email format.";
-    if (!lastNameRegex.test(lastName))
-      error =
-        "Last name should be minimum 2 characters and maximum 25 characters.";
-    if (!firstNameRegex.test(firstName))
-      error =
-        "First name should be minimum 2 characters and maximum 25 characters.";
-    if (error)
+
+    if (errors.length > 0)
       throw new AppError({
         httpCode: HttpCode.BAD_REQUEST,
-        description: error,
+        errors: errors,
       });
   }
 
   validateLoginBody({ email = "", password = "" }: LoginUser) {
-    let error = "";
+    const errors = [];
+
+    if (!emailRegex.test(email))
+      errors.push({ field: "email", message: "Invalid email." });
+
     if (!passwordRegex.test(password))
-      error = "Password should be minimum 6 characters and 1 number.";
-    if (!emailRegex.test(email)) error = "Invalid email format.";
-    if (error)
+      errors.push({
+        field: "password",
+        message: "Password should be minimum 6 characters and 1 number.",
+      });
+
+    if (errors.length > 0)
       throw new AppError({
         httpCode: HttpCode.UNAUTHORIZED,
-        description: error,
+        errors: errors,
       });
   }
 

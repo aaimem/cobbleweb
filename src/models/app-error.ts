@@ -9,6 +9,7 @@ export enum HttpCode {
 
 export interface AppErrorArgs {
   httpCode: HttpCode;
-  description: string;
+  description?: string;
+  errors?: any[];
   isOperational?: boolean;
 }

@@ -3,6 +3,7 @@ import { HttpCode, AppErrorArgs } from "../models/app-error";
 export class AppError extends Error {
   public readonly httpCode: HttpCode;
   public readonly description: string;
+  public readonly errors: any[];
   public readonly isOperational: boolean = true;
 
   constructor(args: AppErrorArgs) {
@@ -10,8 +11,9 @@ export class AppError extends Error {
 
     Object.setPrototypeOf(this, AppError.prototype);
 
-    this.description = args.description;
     this.httpCode = args.httpCode;
+    this.errors = args.errors;
+    this.description = args.description;
 
     if (args.isOperational !== undefined) {
       this.isOperational = args.isOperational;
