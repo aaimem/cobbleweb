@@ -21,6 +21,7 @@ export class ValidationService {
     lastName = "",
     email = "",
     password = "",
+    role = "",
     photos = [],
   }: RegisterUser) {
     const errors = [];
@@ -47,6 +48,12 @@ export class ValidationService {
         field: "password",
         message:
           "Password should be minimum 6 characters to maximum 50 characters long and 1 number.",
+      });
+
+    if (role === "")
+      errors.push({
+        field: "role",
+        message: "role is reqired field.",
       });
 
     if (photos.length < 4) {

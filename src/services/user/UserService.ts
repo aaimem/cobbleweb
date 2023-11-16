@@ -21,6 +21,7 @@ export class UserService {
     lastName,
     email,
     password,
+    role,
     photos,
   }: RegisterUser) {
     this.validationService.validateRegisterBody({
@@ -28,6 +29,7 @@ export class UserService {
       lastName,
       email,
       password,
+      role,
       photos,
     });
     const allowedProperties = [
