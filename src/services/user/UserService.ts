@@ -100,7 +100,7 @@ export class UserService {
     photos: Photo[]
   ): Promise<Client> {
     const client = Object.assign(new Client(), {
-      avatar: avatar,
+      avatar: avatar || "https://api.dicebear.com/avatar.svg",
       user: userId,
       photos: photos,
     });

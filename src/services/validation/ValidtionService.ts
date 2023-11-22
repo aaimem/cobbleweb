@@ -21,7 +21,6 @@ export class ValidationService {
     lastName = "",
     email = "",
     password = "",
-    role = "",
     photos = [],
   }: RegisterUser) {
     const errors = [];
@@ -29,15 +28,13 @@ export class ValidationService {
     if (!firstNameRegex.test(firstName))
       errors.push({
         field: "firstName",
-        message:
-          "First name should be minimum 2 characters and maximum 25 characters.",
+        message: "(Min: 2 chars, Max: 25 chars)",
       });
 
     if (!lastNameRegex.test(lastName))
       errors.push({
         field: "lastName",
-        message:
-          "Last name should be minimum 2 characters and maximum 25 characters.",
+        message: "(Min: 2 chars, Max: 25 chars)",
       });
 
     if (!emailRegex.test(email))
@@ -46,14 +43,7 @@ export class ValidationService {
     if (!passwordRegex.test(password))
       errors.push({
         field: "password",
-        message:
-          "Password should be minimum 6 characters to maximum 50 characters long and 1 number.",
-      });
-
-    if (role === "")
-      errors.push({
-        field: "role",
-        message: "role is reqired field.",
+        message: "(Min: 6 chars, max: 50 chars, At least contains 1 number)",
       });
 
     if (photos.length < 4) {
@@ -89,7 +79,7 @@ export class ValidationService {
     if (!passwordRegex.test(password))
       errors.push({
         field: "password",
-        message: "Password should be minimum 6 characters and 1 number.",
+        message: "(Min: 6 chars, max: 50 chars, At least contains 1 number)",
       });
 
     if (errors.length > 0)

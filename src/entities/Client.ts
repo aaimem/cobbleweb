@@ -20,7 +20,6 @@ export class Client {
   @Column({
     type: "text",
     nullable: false,
-    default: "https://api.dicebear.com/avatar.svg",
   })
   avatar: string;
 

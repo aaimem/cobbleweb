@@ -12,7 +12,7 @@ export const checkJWT = (
   if (!req.headers.authorization) {
     throw new AppError({
       httpCode: HttpCode.UNAUTHORIZED,
-      description: "Auth token not provided.",
+      description: "Request not authorised.",
     });
   }
 

@@ -17,7 +17,7 @@ export class Photo {
   @Column()
   name: string;
 
-  @Column()
+  @Column({ type: "text" })
   url: string;
 
   @ManyToOne(() => User, { cascade: true })
