@@ -4,12 +4,12 @@ import { HttpCode } from "../../models/app-error";
 import CustomRequest from "../../../index";
 import fs from "fs";
 import path from "path";
-const router = Router();
+const photosRrouter = Router();
 
 // @route GET /api/photos
 // @desc Photos
 // @access Public
-router.get("/", async (req: Request, res: Response) => {
+photosRrouter.get("/", async (req: Request, res: Response) => {
   const filePath = path.join(__dirname, "../../public", "index.html");
   fs.readFile(filePath, (err: NodeJS.ErrnoException | null, data: Buffer) => {
     if (err) {
@@ -33,7 +33,7 @@ router.get("/", async (req: Request, res: Response) => {
 // @route POST /api/photos/upload
 // @desc Upload photos
 // @access Public
-router.post(
+photosRrouter.post(
   "/upload",
   photosUploadHandler,
   (req: CustomRequest, res: Response) => {
@@ -68,4 +68,4 @@ router.post(
   }
 );
 
-module.exports = router;
+export default photosRrouter;

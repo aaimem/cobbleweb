@@ -1,12 +1,12 @@
 import express from "express";
 import bodyParser from "body-parser";
 import { AppDataSource } from "./data-source";
-import { config } from "dotenv";
+import 'dotenv/config';
 import { errorHandler } from "./middlewares/errorHandler";
-const port = parseInt(process.env.PORT, 10) || 3000;
-const userRouter = require("./routes/user/user");
-const photosRouter = require("./routes/photos/photos");
-config();
+import swaggerUi from "swagger-ui-express";
+const port = parseInt(process.env.PORT, 10) || 4000;
+import userRouter from "./routes/user/user";
+import photosRouter from "./routes/photos/photos";
 
 AppDataSource.initialize()
   .then(async () => {
@@ -19,7 +19,7 @@ AppDataSource.initialize()
 
     app.listen(port);
     console.log(
-      `Express server has started on port ${port}. Open http://localhost:${port}/users to see results`
+      `Express server has started on port ${port} 🚀`
     );
   })
   .catch((error) => console.log(error));
